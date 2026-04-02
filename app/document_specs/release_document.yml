@@ -1,0 +1,57 @@
+document_type: release_document
+title: "Release Document"
+sections:
+  - id: purpose
+    title: "Purpose"
+  - id: scope
+    title: "Scope"
+  - id: responsibilities
+    title: "Responsibilities"
+  - id: definitions
+    title: "Definitions"
+  - id: intended_use
+    title: "Intended Use"
+  - id: part_11_compliance
+    title: "Part 11 Compliance"
+  - id: overall_tool_risk_evaluation
+    title: "Overall Tool Risk Evaluation"
+  - id: regulatory_classification_and_impact
+    title: "Regulatory Classification and Impact"
+  - id: tool_validation_decision
+    title: "Tool Validation Decision"
+  - id: project_plan
+    title: "Project Plan"
+  - id: requirements
+    title: "Requirements"
+  - id: software_design
+    title: "Software Design"
+  - id: hardware_design
+    title: "Hardware Design"
+  - id: failure_modes_and_risk
+    title: "Failure Modes and Risk"
+  - id: implement
+    title: "Implement"
+  - id: verification_and_validation_plan
+    title: "Verification and Validation Plan"
+  - id: test_protocol
+    title: "Test Protocol"
+  - id: test_results
+    title: "Test Results"
+  - id: trace_matrix
+    title: "Trace Matrix"
+  - id: build_procedure
+    title: "Build Procedure"
+  - id: release_notes
+    title: "Release Notes"
+  - id: impact_assessment
+    title: "Impact Assessment"
+  - id: issue_tracking
+    title: "Issue Tracking"
+  - id: periodic_review
+    title: "Periodic Review"
+  - id: summary
+    title: "Summary"
+  - id: appendices
+    title: "Appendices"
+  - id: reference
+    title: "Reference"

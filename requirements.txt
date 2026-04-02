@@ -1,0 +1,8 @@
+# Install parser_lib whl from ./Wheelhoue/parser_lib-0.1-py3-none-any.whl
+
+certifi 
+python-certifi-win32
+sentence-transformers
+chromadb
+pyqt6
+pyyaml
