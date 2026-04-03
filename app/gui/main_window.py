@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import (
     QComboBox,
@@ -15,6 +16,7 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
+    QSplitter,
 )
 
 from app.core.config import AppConfig
@@ -118,9 +120,22 @@ class MainWindow(QMainWindow):
         self.section_label = QLabel("Current section: (not started)")
         layout.addWidget(self.section_label)
 
+        self.splitter = QSplitter(Qt.Orientation.Horizontal)
+        
+        self.context_view = QTextEdit()
+        self.context_view.setReadOnly(True)
+        self.context_view.setPlaceholderText("Retrieved Context")
+        self.context_view.setFontFamily("Consolas")
+
         self.editor = QTextEdit()
         self.editor.setFontFamily("Consolas")
-        layout.addWidget(self.editor, 1)
+        self.editor.setPlaceholderText("Generated Section Content")
+
+        self.splitter.addWidget(self.context_view)
+        self.splitter.addWidget(self.editor)
+        self.splitter.setSizes([400, 600]) 
+        
+        layout.addWidget(self.splitter, 1)
 
         self.log = QTextEdit()
         self.log.setReadOnly(True)
@@ -238,11 +253,11 @@ class MainWindow(QMainWindow):
         }
 
         try:
-            md = generate_section(
+            md, context_used = generate_section( 
                 spec_title=spec.title,
                 section_title=sec.title,
                 template_path=template_path,
-                collection_name=collection_name,
+                project_name=project,
                 vectordb=self.vectordb,
                 embedder=self.embedder,
                 ollama=self.ollama,
@@ -255,6 +270,7 @@ class MainWindow(QMainWindow):
             return
 
         self.editor.setPlainText(md)
+        self.context_view.setPlainText(context_used) 
         self.logln(f"Generated section: {sec.id}")
 
     def on_approve_next(self) -> None:
@@ -284,9 +300,12 @@ class MainWindow(QMainWindow):
         merged = merge_release_document(spec.title, self.section_state.approved)
 
         out_dir = paths.outputs_dir / document_type
-        out_path = out_dir / "release_document.md"
+        out_path = out_dir / "release_document.docx"  
+        
+        from app.core.export import save_docx 
+        
         try:
-            save_text(out_path, merged)
+            save_docx(out_path, merged) 
         except Exception as e:
             QMessageBox.critical(self, "Save failed", str(e))
             return

@@ -1,57 +1,42 @@
-from __future__ import annotations
-
 import configparser
 from dataclasses import dataclass
 from pathlib import Path
 
-
-@dataclass(frozen=True)
+@dataclass
 class AppConfig:
+    # paths
     project_root: Path
     data_dir: Path
     projects_dir: Path
     chroma_dir: Path
-
-    embedding_model_path: Path
+    
+    # app
+    default_project: str
+    
+    # models
+    embedding_model_path: str
     ollama_model: str
-
+    
+    # rag
     top_k: int
-    chunk_size: int
-    chunk_overlap: int
+    
+    # parsing
+    docling_artifacts_path: str
 
-    docling_artifacts_path: Path | None
+def load_config(ini_path: Path) -> AppConfig:
+    parser = configparser.ConfigParser()
+    parser.read(ini_path)
 
-
-def load_config(config_path: str | Path) -> AppConfig:
-    config_path = Path(config_path)
-    cp = configparser.ConfigParser()
-    cp.read(config_path, encoding="utf-8")
-
-    project_root = Path(cp["paths"]["project_root"]).expanduser()
-    data_dir = (project_root / cp["paths"]["data_dir"]).resolve()
-    projects_dir = (project_root / cp["paths"]["projects_dir"]).resolve()
-    chroma_dir = (project_root / cp["paths"]["chroma_dir"]).resolve()
-
-    embedding_model_path = Path(cp["models"]["embedding_model_path"]).expanduser()
-    ollama_model = cp["models"]["ollama_model"].strip()
-
-    top_k = int(cp["rag"]["top_k"])
-    chunk_size = int(cp["rag"]["chunk_size"])
-    chunk_overlap = int(cp["rag"]["chunk_overlap"])
-
-    docling_artifacts_path = None
-    if cp.has_section("parsing") and cp["parsing"].get("docling_artifacts_path", "").strip():
-        docling_artifacts_path = Path(cp["parsing"]["docling_artifacts_path"]).expanduser()
+    root = Path(parser.get("paths", "project_root"))
 
     return AppConfig(
-        project_root=project_root,
-        data_dir=data_dir,
-        projects_dir=projects_dir,
-        chroma_dir=chroma_dir,
-        embedding_model_path=embedding_model_path,
-        ollama_model=ollama_model,
-        top_k=top_k,
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        docling_artifacts_path=docling_artifacts_path,
+        project_root=root,
+        data_dir=root / parser.get("paths", "data_dir"),
+        projects_dir=root / parser.get("paths", "projects_dir"),
+        chroma_dir=root / parser.get("paths", "chroma_dir"),
+        default_project=parser.get("app", "default_project", fallback="DemoProject"),
+        embedding_model_path=parser.get("models", "embedding_model_path"),
+        ollama_model=parser.get("models", "ollama_model"),
+        top_k=parser.getint("rag", "top_k"),
+        docling_artifacts_path=parser.get("parsing", "docling_artifacts_path"),
     )

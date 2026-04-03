@@ -6,3 +6,4 @@ sentence-transformers
 chromadb
 pyqt6
 pyyaml
+pypandoc

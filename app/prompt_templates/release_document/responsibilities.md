@@ -2,8 +2,8 @@
 
 Write section: **Responsibilities**.
 
-Output a Markdown table with columns:
-| Role/Function/Department | Responsibilities/Details |
+Extract project roles and responsibilities from the CONTEXT. Output a Markdown table with exactly these headers:
 
-Include typical roles (Tool Developer, Tool Validator, End Users, Tool Owner) and refine using CONTEXT.
-If no org-specific roles available, keep generic and mark as "Assumption:".
+| Role/Function/Department | Details |
+
+Include typical roles (e.g., Tool Developer, Tool Validator, End Users, Tool Owner) and map them to the specific individuals or groups mentioned in the context. If no specific roles are found, output the generic table and mark details as "TBD".

@@ -16,6 +16,10 @@ class ChromaVectorDB:
 
     def get_or_create_collection(self, name: str) -> Collection:
         return self._client.get_or_create_collection(name=name)
+    
+    def get_project_collections(self, project: str) -> List[str]:
+        suffix = f"__{project}"
+        return [c.name for c in self._client.list_collections() if c.name.endswith(suffix)]
 
     def upsert_texts(
         self,

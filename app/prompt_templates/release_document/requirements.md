@@ -2,12 +2,19 @@
 
 Write section: **Requirements**.
 
-If CONTEXT includes requirements, convert them into a numbered list with stable IDs:
-- REQ-001, REQ-002, ...
+Analyze the CONTEXT and extract all software requirements. Group them under the following sub-headings ONLY if applicable (omit unused headings):
+- Functionality and features
+- Interfaces
+- Operation
+- Boundary conditions
+- Distribution and installation
+- Serviceability
+- Standards & Regulations
+- Usability & Testability
+- Decommissioning
+- Architecture & Compliance
+- Access Control, Audit Trail, File Protection
 
-Each requirement must be:
-- testable
-- unambiguous
-- tied to intended use
+For each requirement, provide a bullet point with a stable ID (e.g., REQ-001, REQ-002) and a clear, testable statement.
 
-If insufficient info, provide an initial set of draft requirements clearly marked as "Draft (requires confirmation)".
+If no requirements can be found in the CONTEXT, output: "TBD - Requirements not found in provided context."

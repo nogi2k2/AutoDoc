@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import yaml
 
@@ -47,14 +47,14 @@ def generate_section(
     spec_title: str,
     section_title: str,
     template_path: Path,
-    collection_name: str,
+    project_name: str,
     vectordb: ChromaVectorDB,
     embedder: EmbeddingModel,
     ollama: OllamaClient,
     ollama_model: str,
     top_k: int,
     variables: Dict[str, str],
-) -> str:
+) -> Tuple[str, str]:
     if not template_path.exists():
         raise FileNotFoundError(f"Missing prompt template: {template_path}")
 
@@ -62,9 +62,18 @@ def generate_section(
 
     query_text = f"{spec_title} - {section_title}: generate this section based on available context."
     q_emb = embedder.embed([query_text])[0]
-    retrieved = vectordb.query(collection_name=collection_name, query_embedding=q_emb, top_k=top_k)
+    
+    project_collections = vectordb.get_project_collections(project_name)
+    all_retrieved = []
+    for col in project_collections:
+        all_retrieved.extend(vectordb.query(collection_name=col, query_embedding=q_emb, top_k=top_k))
+    
+    all_retrieved.sort(key=lambda x: x.score if x.score is not None else float('inf'))
+    best_retrieved = all_retrieved[:top_k]
+
+    formatted_context = format_context(best_retrieved)
     variables = dict(variables)
-    variables["context"] = format_context(retrieved)
+    variables["context"] = formatted_context
 
     prompt = render_prompt_template(template, variables)
 
@@ -72,8 +81,10 @@ def generate_section(
         "You are a technical documentation assistant for regulated software tool documentation.\n"
         "Output Markdown only."
     )
-    return ollama.generate_markdown_only(
+    generated_md = ollama.generate_markdown_only(
         model=ollama_model,
         system=system,
         prompt=prompt,
     )
+    
+    return generated_md, formatted_context
